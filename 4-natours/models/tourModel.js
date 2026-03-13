@@ -60,19 +60,26 @@ const tourSchema = new mongoose.Schema({
             default: Date.now()
         },
 
-        startDates: [Date] 
+        startDates: [Date] ,
+
+        secretTour: {
+            type : Boolean,
+            default : false
+        }
+
         },
     {
         toJSON : { virtuals : true},
         toObject : { virtuals : true }
-    }
+    },
+    
 );
 
 tourSchema.virtual('durationWeeks').get(function() {
     return this.duration / 7;
 });
 
-//DOCUMENT MIDDLE WARE run before save and create
+//DOCUMENT MIDDLEWARE run before save and create
 
 tourSchema.pre('save', function(next) {
     this.slug = slugify(this.name, {lower: true});
@@ -86,6 +93,29 @@ tourSchema.pre('save', function(next) {
 
 // tourSchema.post('save',function(doc,next){
 //     console.log(doc);
+//     next();
+// });
+
+
+//QUERY MIDDLEWARE 
+tourSchema.pre(/^find/,function(next){
+    this.find({secretTour : {$ne : true}});
+    // wanna calculate the process time
+    this.start = Date.now();
+    next();
+});
+
+tourSchema.post(/^find/,function(docs,next){
+    console.log(`process take ${Date.now() - this.start} millesSconds :)`);
+    console.log(docs);
+    next();
+});
+// tourSchema.pre('find',function(next){
+//     this.find({secretTour : {$ne : true}});
+//     next();
+// });
+// tourSchema.pre('findOne',function(next){
+//     this.find({secretTour : {$ne : true}});
 //     next();
 // });
 
