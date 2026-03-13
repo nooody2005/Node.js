@@ -2,7 +2,7 @@ const Tour = require('./../models/tourModel');
 
 //middle ware 
 exports.aliasTopTour = (req, res, next) => {
-    req.query.limit = 5;
+    req.query.limit = '5';
     req.query.sort = '-ratingsAverage,price';
     req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
     next();
@@ -11,7 +11,7 @@ exports.aliasTopTour = (req, res, next) => {
 class APIFeatures {
     constructor(query,queryOBJ){
         this.query = query;
-        this .queryOBJ = queryOBJ;
+        this.queryOBJ = queryOBJ;
     }
 
     filter(){
@@ -46,8 +46,8 @@ class APIFeatures {
         return this;
     }
     paginate(){
-        const page = this.query.page * 1 || 1;
-        const limit = this.query.limit * 1 || 100;
+        const page = this.queryOBJ.page * 1 || 1;
+        const limit = this.queryOBJ.limit * 1 || 100;
         const skip = (page - 1 ) * limit ;
 
         this.query = this.query.skip(skip).limit(limit);
@@ -106,9 +106,9 @@ exports.getAllTours = async (req, res) => {
         //     if (skip > numTours) throw new Error('This page does not exist');
         // }
         
-        
+
         //EXCUTE QUERY
-        const features = new APIFeatures(Tour.find(), req.query).filter().sort().limitFields().paginate() ;
+        const features = new APIFeatures(Tour.find(), req.query).filter().sort().limitFields().paginate();
         const tours = await features.query;
         // const tours = await Tour.find(JSON.parse(queryStr));
         // const tours = await Tour.find(queryObj);
