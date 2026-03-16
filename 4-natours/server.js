@@ -12,7 +12,7 @@ mongoose.connect(DB, {
   // useCreateIndex و useFindAndModify اتلغوا في Mongoose 7
 })
 .then(() => console.log('DB connection successful'))
-.catch(err => console.log('DB connection error:', err));
+// .catch(err => console.log('DB connection error:', err));
 
 // //insert as a row 
 // const testTour = new Tour({
@@ -33,8 +33,18 @@ mongoose.connect(DB, {
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`running on the port ${port}`);
+});
+
+process.on('unhandledRejection',err => {
+  
+  console.log(err.name, err.message);
+  console.log('UNHANDLED REJECTION :( Shutting down...');
+  server.close(() => {
+    //we get the server time to finish all the requests
+    process.exit(1);
+  });
 });
 
 
