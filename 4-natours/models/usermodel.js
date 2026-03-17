@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+const bcrypt  = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -32,11 +33,33 @@ const userSchema = new mongoose.Schema({
   },
   passwordConfirm: {
     type:String,
-    required: [true, 'you must confirm your password']
+    required: [true, 'you must confirm your password'],
+    validate:{
+        //This only works on create and save
+        validator:function(el){
+            return el === this.password;
+        },
+        message:'Passwords are not the same:)'
+    }
   }
 });
+
+userSchema.pre('save',async function(next){
+    //only run if password is acually modefied
+    if(!this.isModified('password'))    return next();
+
+    //Hash the password with const of 12
+    this.password = await bcrypt.hash(this.password,12);
+
+    //no need to confirm pass if validation wan successful 
+    this.passwordConfirm = undefined;
+
+    next();
+});
+
 
 
 const User = mongoose.model('User',userSchema);
 
 module.exports = User;
+
