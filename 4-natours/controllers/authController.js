@@ -2,6 +2,7 @@ const User = require('./../models/usermodel');
 const catchAsync = require('./../utils/catchAsync');
 const jwt = require('jsonwebtoken');
 const AppError = require('./../utils/appError');
+const { token } = require('morgan');
 
 
 const signToken = id => {
@@ -49,9 +50,30 @@ exports.login = catchAsync(async(req,res,next) => {
 
     // 3) check everything is okay then send token
     const token = signToken(user._id);
-    
+
     res.status(200).json({
         status : 'success',
         token
     });
+});
+
+
+exports.protect = catchAsync(async(req,res,next) => {
+    // 1) getting token and check if its there 
+    let token
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+        token = req.headers.authorization.split(' ')[1];
+    }
+    console.log(token);
+
+    // 2) verificaton token 
+    if(!token){
+        return next(new AppError('you are not logged in ..PLease login to get access',401));
+    }
+
+    // 3) check if user still exists
+
+    // 4) check if user changed password the jwt was issued
+
+    next();
 });
