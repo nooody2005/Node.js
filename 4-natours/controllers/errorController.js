@@ -15,6 +15,14 @@ const handleMongooseValidationError = (err) => {
     const message = `Invalid input data ${errors.join('. ')}`;
     return new AppError(message,400);
 }
+const handleJsonWebTokenError = () => {
+    return new AppError('Invalid Token Please enter valid token :)', 201);
+}
+
+const handleTokenExpiredError = () => {
+    return new AppError('Expired Token Please enter valid token',201);
+}
+
 const sendErrorDev = (err, res) => {
     res.status(err.statusCode).json({
         status: err.status,
@@ -64,6 +72,8 @@ module.exports = (err, req, res, next) => {
    if (error.name === 'CastError') error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDublicateErrorDB(error);
     if (error.name === 'ValidationError') error = handleMongooseValidationError(error);
+    if (error.name === 'JsonWebTokenError') error = handleJsonWebTokenError();
+    if (error.name === 'TokenExpiredError') error = handleTokenExpiredError();
     sendErrorProd(error, res);
   }
 
