@@ -13,6 +13,11 @@ const userSchema = new mongoose.Schema({
     // minlength: [10, 'name must be above 10 characters']
     // validate : [validator.isAlpha,'name should contains characters only :)']
   },
+  role:{
+    type : String,
+    enum:['admin','lead-guide','guide','user'],
+    default:'user'
+  },
   email: {
     // type: email,
     type: String,

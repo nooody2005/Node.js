@@ -79,19 +79,36 @@ exports.login = catchAsync(async (req, res, next) => {
     console.log(decoded);
 
     // 3) check if user still exists
-    const freshUser = await User.findById(decoded.id);
-    if(!freshUser){
+    const currentUser = await User.findById(decoded.id);
+    if(!currentUser){
         return next(new AppError('the user belongs to this token no longer exist :)', 401));
     }
 
     // 4) check if user changed password the jwt was issued
-    if(freshUser.changePasswordAfter(decoded.iat)){
+    if(currentUser.changePasswordAfter(decoded.iat)){
         return next (new AppError('User recently changed password Please log in again',401));
     }
 
 
     //Grant access to protected route
-    req.user = freshUser;
+    req.user = currentUser;
 
     next();
 });
+
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles{admin,lead-guide}. role(user)
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError(
+          'Sorry you do not have role & permissions to get access',
+          403
+        )
+      );
+    }
+
+    next();
+  };
+};

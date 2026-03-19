@@ -16,11 +16,11 @@ const handleMongooseValidationError = (err) => {
     return new AppError(message,400);
 }
 const handleJsonWebTokenError = () => {
-    return new AppError('Invalid Token Please enter valid token :)', 201);
+    return new AppError('Invalid Token Please enter valid token :)', 401);
 }
 
 const handleTokenExpiredError = () => {
-    return new AppError('Expired Token Please enter valid token',201);
+    return new AppError('Expired Token Please enter valid token',401);
 }
 
 const sendErrorDev = (err, res) => {
