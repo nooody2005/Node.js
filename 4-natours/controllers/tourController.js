@@ -136,24 +136,38 @@ exports.getTour =catchAsync( async (req, res,next) => {
 
 });
 //================================================================================
+exports.createTour = catchAsync(async (req, res, next) => {
+  const newTour = await Tour.create(req.body);
 
+  // شرط Optional: التأكد إن الـ newTour اتعمل فعلاً
+  if (!newTour) {
+    return next(new AppError('Failed to create new tour', 500));
+  }
 
-exports.createTour = catchAsync(async (req, res ,next) => {
-    
-    const newTour = await Tour.create(req.body);
-
-    if (!tour) {
-    return next(new AppError('No tour found with that Id :)', 404));
+  res.status(201).json({
+    status: 'success',
+    data: {
+      tour: newTour
     }
-
-    res.status(201).json({
-      status: 'success',
-      data: {
-        tour: newTour
-      }
-    });
-  
+  });
 });
+
+// exports.createTour = catchAsync(async (req, res ,next) => {
+    
+//     const newTour = await Tour.create(req.body);
+
+//     if (!tour) {
+//     return next(new AppError('No tour found with that Id :)', 404));
+//     }
+
+//     res.status(201).json({
+//       status: 'success',
+//       data: {
+//         tour: newTour
+//       }
+//     });
+  
+// });
 
 //================================================================================
 exports.updateTour = catchAsync(async (req, res, next) => {

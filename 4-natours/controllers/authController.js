@@ -112,3 +112,21 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+exports.fogretPassword = catchAsync(async(req,res,next) => {
+    //Get user based on posted email
+    const user = User.findOne({email: req.body.email});
+
+    if(!user){
+        return next(new AppError('sorry there is no user with this email address :)',404));
+    }
+
+    //Generate the random reset token
+    const resetToken = user.createPasswordResetToken();
+    await user.save({validateBeforeSave : false});
+
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+    
+});
