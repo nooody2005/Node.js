@@ -87,13 +87,16 @@ userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
   return false;
 }
 
-userSchema.createPasswordResetToken = function() {
+userSchema.methods.createPasswordResetToken = function() {
   const resetToken = crypto.randomBytes(32).toString('hex');
 
   console.log(resetToken);
 
-  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-  this.passwordResetExpires = Date.now() * 10 * 60 * 1000;
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // give 10 minutes for session
 
   return resetToken;
 };
