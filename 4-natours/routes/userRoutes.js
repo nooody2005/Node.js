@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require('./../controllers/userController');
 const authController = require('./../controllers/authController');
+const { route } = require('./tourRoutes');
 //define router 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ router.post('/login', authController.login);
 router.post('/forgetPassword', authController.forgetPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
+router.patch('/updateMyPassword', authController.protect,authController.updatePassword);
 
 router
   .route('/')
