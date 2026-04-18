@@ -29,8 +29,12 @@ const limiter = rateLimit({
 
 app.use('/api',limiter);
 
-// Body Parser, reading
-app.use(express.json());
+// Body Parser, reading data from body into req.body
+app.use(express.json({ limit : '10kb'}));    // limitting data sended via body
+
+
+
+//Serving Static files
 app.use(express.static(`${__dirname}/public`));
 
 // app.use((req, res, next) => {
@@ -38,6 +42,7 @@ app.use(express.static(`${__dirname}/public`));
 //   next();
 // });
 
+//Test middlewares
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   console.log(req.headers);
