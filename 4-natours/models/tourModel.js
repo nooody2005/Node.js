@@ -137,6 +137,17 @@ tourSchema.pre('save', function(next) {
     next();
 });
 
+tourSchema.pre(/^find/, function(next) {
+  this.populate({
+        path:'guides',
+        select: '-__v -passwordChangedAt'
+    }); //we make population
+    
+  next();
+});
+
+
+
 // only for new document        ..not update  ---> make embedding
 // tourSchema.pre('save', async function(next){
 //     const guidePromises = this.guides.map(async id => await User.findById(id));
