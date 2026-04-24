@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
-const User = require('./usermodel');
+// const User = require('./usermodel');
 //make collection (table)
 
 const tourSchema = new mongoose.Schema(
@@ -110,7 +110,14 @@ const tourSchema = new mongoose.Schema(
         day: Number
       }
     ],
-    guides: Array
+    // guides: Array            //// embedding way
+    guides:[    //referencing way
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User'
+        }
+    ]
+
   },
 
   {
@@ -130,12 +137,16 @@ tourSchema.pre('save', function(next) {
     next();
 });
 
-// only for new document        ..not update
-tourSchema.pre('save', async function(next){
-    const guidePromises = this.guides.map(async id => await User.findById(id));
-    this.guides = await Promise.all(guidePromises);
-    next();
-});
+// only for new document        ..not update  ---> make embedding
+// tourSchema.pre('save', async function(next){
+//     const guidePromises = this.guides.map(async id => await User.findById(id));
+//     this.guides = await Promise.all(guidePromises);
+//     next();
+// });
+
+
+
+
 
 // tourSchema.pre('save', function(next) {
 //     console.log('save done :)');
