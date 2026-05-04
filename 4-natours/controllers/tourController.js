@@ -137,60 +137,49 @@ exports.getTour =catchAsync( async (req, res,next) => {
     });
 
 });
+
 //================================================================================
-exports.createTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
+exports.createTour = handleFactory.createOne(Tour);
+exports.updateTour = handleFactory.updateOne(Tour); 
+exports.deleteTour = handleFactory.deleteOne(Tour);
 
-  // شرط Optional: التأكد إن الـ newTour اتعمل فعلاً
-  if (!newTour) {
-    return next(new AppError('Failed to create new tour', 500));
-  }
+//================================================================================
 
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour
-    }
-  });
-});
+// exports.createTour = catchAsync(async (req, res, next) => {
+//   const newTour = await Tour.create(req.body);
 
-// exports.createTour = catchAsync(async (req, res ,next) => {
-    
-//     const newTour = await Tour.create(req.body);
+//   if (!newTour) {
+//     return next(new AppError('Failed to create new tour', 500));
+//   }
 
-//     if (!tour) {
-//     return next(new AppError('No tour found with that Id :)', 404));
+//   res.status(201).json({
+//     status: 'success',
+//     data: {
+//       tour: newTour
 //     }
-
-//     res.status(201).json({
-//       status: 'success',
-//       data: {
-//         tour: newTour
-//       }
-//     });
-  
+//   });
 // });
 
 //================================================================================
-exports.updateTour = catchAsync(async (req, res, next) => {
-   
-    const tour = await Tour.findByIdAndUpdate(req.params.id,req.body,{
-        new : true,
-        runValidators:true
-    });
 
-    res.status(200).json({
-        status: 'success',
-        data: {
-        tour:tour
-        },
-    });
+// exports.updateTour = catchAsync(async (req, res, next) => {
    
-});
+//     const tour = await Tour.findByIdAndUpdate(req.params.id,req.body,{
+//         new : true,
+//         runValidators:true
+//     });
+
+//     res.status(200).json({
+//         status: 'success',
+//         data: {
+//         tour:tour
+//         },
+//     });
+   
+// });
 //================================================================================
 //delete Tour
 
-exports.deleteTour = handleFactory.deleteOne(Tour);
 
 // exports.deleteTour = catchAsync(async (req, res, next) => {
 

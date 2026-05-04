@@ -1,7 +1,42 @@
+const { Model } = require('mongoose');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 
 
+
+
+exports.createOne = Model => catchAsync(async (req, res, next) => {
+  const doc = await Model.create(req.body);
+
+
+  if (!doc) {
+    return next(new AppError('Failed to create new document', 500));
+  }
+
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: doc
+    }
+  });
+});
+
+
+exports.updateOne = Model => catchAsync(async (req, res, next) => {
+   
+    const doc = await Model.findByIdAndUpdate(req.params.id,req.body,{
+        new : true,
+        runValidators:true
+    });
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            data:doc
+        },
+    });
+   
+});
 
 exports.deleteOne = Model => catchAsync(async (req, res, next) => {
   //find ---> delte it
@@ -17,3 +52,5 @@ exports.deleteOne = Model => catchAsync(async (req, res, next) => {
     data: null
   });
 });
+
+

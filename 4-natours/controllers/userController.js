@@ -69,18 +69,30 @@ exports.getUser = (req, res) => {
     message: "This route is n't yet defined"
   });
 };
-exports.createUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: "This route is n't yet defined"
-  });
-};
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: "This route is n't yet defined"
-  });
-};
+
+//=========================================================
+exports.createUser = handleFactory.createOne(User);
+exports.updateUser = handleFactory.updateOne(User);
+exports.deleteUser = handleFactory.deleteOne(User);
+//========================================================
+
+
+
+// exports.createUser = (req, res) => {
+//   res.status(500).json({
+//     status: 'error',
+//     message: "This route is n't yet defined"
+//   });
+// };
+
+
+// exports.updateUser = (req, res) => {
+//   res.status(500).json({
+//     status: 'error',
+//     message: "This route is n't yet defined"
+//   });
+// };
+
 // exports.deleteUser = (req, res) => {
 //   res.status(500).json({
 //     status: 'error',
@@ -88,4 +100,3 @@ exports.updateUser = (req, res) => {
 //   });
 // };
 
-exports.deleteUser = handleFactory.deleteOne(User);

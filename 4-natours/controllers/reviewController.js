@@ -20,20 +20,34 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.createReview = catchAsync(async (req, res, next) => {
+exports.setTourUserIds = (req,res,next) => { //this middleware before creating reviews ...cuz needing to route with tour & user id
     //Allow nested routes
     if(!req.body.tour)   req.body.tour = req.params.tourId;
     if(!req.body.user)  req.body.user = req.user.id;
 
+    next();
+}
+//=========================================================
 
-    const newReview = await Review.create(req.body);
-
-    res.status(200).json({
-        status: 'success',
-        data:{
-            review: newReview
-        }
-    })
-});
-
+exports.createReview = handleFactory.createOne(Review);
+exports.updateReview = handleFactory.updateOne(Review);
 exports.deleteReview = handleFactory.deleteOne(Review);
+//========================================================
+
+// exports.createReview = catchAsync(async (req, res, next) => {
+//     //Allow nested routes
+//     if(!req.body.tour)   req.body.tour = req.params.tourId;
+//     if(!req.body.user)  req.body.user = req.user.id;
+
+
+//     const newReview = await Review.create(req.body);
+
+//     res.status(200).json({
+//         status: 'success',
+//         data:{
+//             review: newReview
+//         }
+//     })
+// });
+
+
