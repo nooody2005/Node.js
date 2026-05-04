@@ -13,18 +13,22 @@ router
     reviewController.createReview
   );
 
-// router
-//   .route('/:id')
-//   .patch(reviewController.updateReview)
-//   .delete(reviewController.deleteReview);
+router
+  .route('/:id')
+  .get(reviewController.getReview)
+  .patch(reviewController.updateReview)
+  .delete(reviewController.deleteReview);
 
-//I add this from myself
-  router
-    .route('/:id')
-    .patch(
-      authController.protect,
-      authController.restrictTo('user'),
-      reviewController.updateReview
-    )
-    .delete(reviewController.deleteReview);
+
+// //I add this from myself
+//   router
+//     .route('/:id')
+//     .patch(
+//       authController.protect,
+//       authController.restrictTo('user'),
+//       reviewController.updateReview
+//     )
+//     .delete(reviewController.deleteReview);
+
+
 module.exports = router;
