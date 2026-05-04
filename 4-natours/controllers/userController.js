@@ -50,6 +50,11 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getMe = (req,res,next) => {
+  req.params.id = req.user.id;
+  next();
+}
+
 //=========================================================
 exports.getAllUsers = handleFactory.getAll(User);
 exports.getUser = handleFactory.getOne(User);
