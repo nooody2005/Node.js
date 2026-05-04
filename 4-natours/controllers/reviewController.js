@@ -1,6 +1,7 @@
 const { status } = require('express/lib/response');
 const Review = require('./../models/reviewModel');
 const catchAsync = require('./../utils/catchAsync');
+const handleFactory =  require('./../controllers/handleFactory');
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
 
@@ -34,3 +35,5 @@ exports.createReview = catchAsync(async (req, res, next) => {
         }
     })
 });
+
+exports.deleteReview = handleFactory.deleteOne(Review);
