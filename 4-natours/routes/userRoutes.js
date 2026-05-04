@@ -1,8 +1,9 @@
 const express = require('express');
 const userController = require('./../controllers/userController');
 const authController = require('./../controllers/authController');
+const reviewController = require('./../controllers/reviewController');
 const { route } = require('./tourRoutes');
-//define router 
+//define router
 const router = express.Router();
 
 //make routes
@@ -12,12 +13,14 @@ router.post('/login', authController.login);
 router.post('/forgetPassword', authController.forgetPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
-router.patch('/updateMyPassword', authController.protect,authController.updatePassword);
+router.patch(
+  '/updateMyPassword',
+  authController.protect,
+  authController.updatePassword
+);
 
-
-router.patch('/updateMe',authController.protect,userController.updateMe);
+router.patch('/updateMe', authController.protect, userController.updateMe);
 router.delete('/deleteMe', authController.protect, userController.deleteMe);
-
 
 router
   .route('/')
@@ -28,5 +31,6 @@ router
   .get(userController.getUser)
   .patch(userController.updateUser)
   .delete(userController.deleteUser);
+
 
 module.exports = router;
