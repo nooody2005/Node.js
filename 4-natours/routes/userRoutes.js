@@ -6,15 +6,16 @@ const { route } = require('./tourRoutes');
 //define router
 const router = express.Router();
 
-//make routes
+// ==================================================== PUBLIC ==============================================
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
 router.post('/forgetPassword', authController.forgetPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
+
+
+// ================================================== PROTECTED ==============================================
 router.use(authController.protect);   //the centeral middle ware for all the next routers // son no need yet to write it again
-
-
 
 router.patch(
   '/updateMyPassword',
@@ -30,6 +31,8 @@ router.get(
 router.patch('/updateMe',userController.updateMe);
 router.delete('/deleteMe',userController.deleteMe);
 
+
+// ============================================== ADMIN =========================================================
 router.use(authController.restrictTo('admin'));   //make this as a middle ware for all the next routers after it 
 
 router
