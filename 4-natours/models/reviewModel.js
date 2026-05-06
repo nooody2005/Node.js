@@ -49,17 +49,39 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     ]);
     console.log(stats);
 
-    await Tour.findByIdAndUpdate(tourId, {
-      ratingsQuantity: stats[0].nRating,
-      ratingsAverage : stats[0].avgRating
-    });
+    if(stats.length > 0){
+      await Tour.findByIdAndUpdate(tourId, {
+        ratingsQuantity: stats[0].nRating,
+        ratingsAverage : stats[0].avgRating
+      });
+    } else {
+      await Tour.findByIdAndUpdate(tourId, {
+        ratingsQuantity:0,
+        ratingsAverage:4.5
+      });
+    }
 }
 
+
+//save ---->  not working with query operation like
+// FindOneAndUpdate
+// FindOneAndDelete
 reviewSchema.post('save', function(){
   //this points to current Review
   this.constructor.calcAverageRatings(this.tour);
 });
 
+reviewSchema.pre(/^findOneAnd/, async function(next) {
+  // this.r = await this.findOne();
+  this.r = await this.clone().findOne();
+  console.log(this.r);
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function() {
+  // this.r = await this.findOne(); Doesn't work here, query has already executed
+  await this.r.constructor.calcAverageRatings(this.r.tour);
+});
 
 reviewSchema.pre(/^find/, function(next) {
   //populating review
