@@ -12,27 +12,31 @@ router.post('/login', authController.login);
 
 router.post('/forgetPassword', authController.forgetPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
+router.use(authController.protect);   //the centeral middle ware for all the next routers // son no need yet to write it again
+
+
 
 router.patch(
   '/updateMyPassword',
-  authController.protect,
   authController.updatePassword
 );
 
 router.get(
   '/me',
-  authController.protect,
   userController.getMe,
   userController.getUser
 );
 
-router.patch('/updateMe', authController.protect, userController.updateMe);
-router.delete('/deleteMe', authController.protect, userController.deleteMe);
+router.patch('/updateMe',userController.updateMe);
+router.delete('/deleteMe',userController.deleteMe);
+
+router.use(authController.restrictTo('admin'));   //make this as a middle ware for all the next routers after it 
 
 router
   .route('/')
   .get(userController.getAllUsers)
   .post(userController.createUser);
+
 router
   .route('/:id')
   .get(userController.getUser)
