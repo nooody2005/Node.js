@@ -76,7 +76,11 @@ app.use((req, res, next) => {
 //3) ROUTES
 //=============================================================================================================
 app.get('/', (req ,res ) => {
-  res.status(200).render('base');     //get in base file that existed in views folder
+  res.status(200).render('base', {
+    //get in base file that existed in views folder
+    tour: 'The Forest Hiker',
+    user: 'Nada'
+  });    
 });
 
 app.use('/api/v1/tours', tourRouter);
