@@ -85,7 +85,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews',reviewRouter);
 
 app.all('*', (req, res, next) => {
-  //make object from class AppError in the fil appError in utils folder  and send this error to it 
+  //make object from class AppError in the file appError in utils folder  and send this error to it 
   next(new AppError(`can't find ${req.originalUrl} on this server :)`, 404));
 });
 
