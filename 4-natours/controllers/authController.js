@@ -93,7 +93,38 @@ exports.login = catchAsync(async (req, res, next) => {
     // });
  });
 
-    exports.protect = catchAsync(async (req, res, next) => {
+// only for render pages
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+  
+    // 1) verify token 
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET);
+    console.log(decoded);
+
+    // 2) check if user still exists
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
+      return next();
+    }
+
+    // 3) check if user changed password the jwt was issued
+    if (currentUser.changePasswordAfter(decoded.iat)) {
+      return next();
+    }
+
+    // 4) there is a logged in user  ---> make it accessable to a template
+    res.locals.user = currentUser;
+    return next();
+  }
+  next();
+});
+
+
+
+
+exports.protect = catchAsync(async (req, res, next) => {
     // 1) getting token and check if its there
     let token;
     if (
