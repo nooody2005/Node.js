@@ -7988,7 +7988,7 @@ require("core-js/modules/web.dom.iterable.js");
 var _mapBox = require("./mapBox");
 var _login = require("./login");
 const mapBox = document.getElementById('map');
-const loginForm = document.querySelector('.form');
+const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 
 //DELETION
