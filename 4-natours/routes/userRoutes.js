@@ -15,6 +15,8 @@ router.patch('/resetPassword/:token', authController.resetPassword);
 
 
 // ================================================== PROTECTED ==============================================
+router.get('/logout',authController.logout);
+
 router.use(authController.protect);   //the centeral middle ware for all the next routers // son no need yet to write it again
 
 router.patch(

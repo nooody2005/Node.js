@@ -8,7 +8,7 @@ const sendEmail = require('./../utils/email');
 const { token } = require('morgan');
 const { findById } = require('../models/tourModel');
 const { send } = require('process');
-const { cookie } = require('express/lib/response');
+const { cookie, status } = require('express/lib/response');
 
 const signToken = id => {
   //jwt.sign({payload},secret);
@@ -94,34 +94,50 @@ exports.login = catchAsync(async (req, res, next) => {
  });
 
 // only for render pages
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
-  if (req.cookies.jwt) {
-  
-    // 1) verify token 
-    const decoded = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_SECRET);
-    console.log(decoded);
+// exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  exports.isLoggedIn = async (req, res, next) => {      //we remove catchasync to can logout
+    //  if (req.cookies.jwt && req.cookies.jwt !== 'loggedout')
 
-    // 2) check if user still exists
-    const currentUser = await User.findById(decoded.id);
-    if (!currentUser) {
-      return next();
+    if (req.cookies.jwt) {
+      try {
+        // 1) verify token
+        const decoded = await promisify(jwt.verify)(
+          req.cookies.jwt,
+          process.env.JWT_SECRET
+        );
+        console.log(decoded);
+
+        // 2) check if user still exists
+        const currentUser = await User.findById(decoded.id);
+        if (!currentUser) {
+          return next();
+        }
+
+        // 3) check if user changed password the jwt was issued
+        if (currentUser.changePasswordAfter(decoded.iat)) {
+          return next();
+        }
+
+        // 4) there is a logged in user  ---> make it accessable to a template
+        res.locals.user = currentUser;
+        return next();
+      } catch (err) {
+        return next();
+      }
     }
+    next();
+  };
+  // });
 
-    // 3) check if user changed password the jwt was issued
-    if (currentUser.changePasswordAfter(decoded.iat)) {
-      return next();
-    }
-
-    // 4) there is a logged in user  ---> make it accessable to a template
-    res.locals.user = currentUser;
-    return next();
-  }
-  next();
-});
-
-
+exports.logout = (req,res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),  //make expire date now 
+    httpOnly: true
+  });
+  res.status(200).json({
+    status: 'success'
+  });
+};
 
 
 exports.protect = catchAsync(async (req, res, next) => {
