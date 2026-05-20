@@ -93,6 +93,54 @@ exports.login = catchAsync(async (req, res, next) => {
     // });
  });
 
+
+ exports.protect = catchAsync(async (req, res, next) => {
+   // 1) getting token and check if its there
+   let token;
+   if (
+     req.headers.authorization &&
+     req.headers.authorization.startsWith('Bearer')
+   ) {
+     token = req.headers.authorization.split(' ')[1];
+   } else if (req.cookies.jwt) {
+     token = req.cookies.jwt;
+   }
+   console.log(token);
+
+   if (!token) {
+     return next(
+       new AppError('you are not logged in ..PLease login to get access', 401)
+     );
+   }
+
+   // 2) verificaton token
+   // jwt.verify(token,process.env.JWT_SECRET);
+   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+   console.log(decoded);
+
+   // 3) check if user still exists
+   const currentUser = await User.findById(decoded.id);
+   if (!currentUser) {
+     return next(
+       new AppError('the user belongs to this token no longer exist :)', 401)
+     );
+   }
+
+   // 4) check if user changed password the jwt was issued
+   if (currentUser.changePasswordAfter(decoded.iat)) {
+     return next(
+       new AppError('User recently changed password Please log in again', 401)
+     );
+   }
+
+   //Grant access to protected route
+   req.user = currentUser;
+   res.locals.user = currentUser;
+
+   next();
+ });
+
+
 // only for render pages
 // exports.isLoggedIn = catchAsync(async (req, res, next) => {
   exports.isLoggedIn = async (req, res, next) => {      //we remove catchasync to can logout
@@ -139,49 +187,6 @@ exports.logout = (req,res) => {
   });
 };
 
-
-exports.protect = catchAsync(async (req, res, next) => {
-    // 1) getting token and check if its there
-    let token;
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
-    ) {
-        token = req.headers.authorization.split(' ')[1];
-    }
-    else if(req.cookies.jwt){
-      token = req.cookies.jwt;
-    }
-    console.log(token);
-
-    if (!token) {
-        return next(
-        new AppError('you are not logged in ..PLease login to get access', 401)
-        );
-    }
-
-    // 2) verificaton token
-    // jwt.verify(token,process.env.JWT_SECRET);
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    console.log(decoded);
-
-    // 3) check if user still exists
-    const currentUser = await User.findById(decoded.id);
-    if(!currentUser){
-        return next(new AppError('the user belongs to this token no longer exist :)', 401));
-    }
-
-    // 4) check if user changed password the jwt was issued
-    if(currentUser.changePasswordAfter(decoded.iat)){
-        return next (new AppError('User recently changed password Please log in again',401));
-    }
-
-
-    //Grant access to protected route
-    req.user = currentUser;
-
-    next();
-});
 
 
 exports.restrictTo = (...roles) => {
