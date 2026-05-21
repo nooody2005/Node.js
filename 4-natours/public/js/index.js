@@ -1,12 +1,13 @@
 import '@babel/polyfill';
 import { displayMap } from './mapBox'
 import { login , logout} from './login';
-import { updateData} from './updateSettings';
+import { updateSettings} from './updateSettings';
 
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
+const userPasswordForm = document.querySelector('.form-user-password');
 
 
 //DELETION
@@ -36,5 +37,30 @@ if(userDataForm)
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
 
-        updateData(name,email);
+        updateSettings({name,email}, 'data');
+    });
+
+if(userPasswordForm)
+    userPasswordForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        // to change the innerhtml in button
+        document.querySelector('.btn--save-password').textContent =
+          'Updating..';
+
+        const passwordCurrent = document.getElementById('password-current').value;
+        const password = document.getElementById('password').value;
+        const passwordConfirm = document.getElementById('password-confirm').value;
+        await updateSettings(
+            {
+                passwordCurrent, password , passwordConfirm        // pass data in function 
+            },
+            'password'                // type of data 
+        );
+
+        // to reset innerhtml text in button
+        document.querySelector('.btn--save-password').textContent = 'Save password';
+        // to reset values and remove it from input labels 
+        document.getElementById('password-current').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('password-confirm').value = '';
     });

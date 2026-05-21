@@ -38,7 +38,7 @@ block content
 
 
           //WITH API
-          form.form.form-user-data(action='/submit-user-data' method='POST')
+          form.form.form-user-data
 
             .form__group
               label.form__label(for='name') Name
@@ -72,7 +72,7 @@ block content
         .user-view__form-container
           h2.heading-secondary.ma-bt-md Password change
 
-          form.form.form-user-settings
+          form.form.form-user-password
 
             .form__group
               label.form__label(for='password-current') Current password
@@ -105,4 +105,4 @@ block content
               )
 
             .form__group.right
-              button.btn.btn--small.btn--green Save password
+              button.btn.btn--small.btn--green.btn--save-password Save password
