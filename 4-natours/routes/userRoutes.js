@@ -1,8 +1,11 @@
 const express = require('express');
+
 const userController = require('./../controllers/userController');
 const authController = require('./../controllers/authController');
 const reviewController = require('./../controllers/reviewController');
 const { route } = require('./tourRoutes');
+
+
 //define router
 const router = express.Router();
 
@@ -30,7 +33,7 @@ router.get(
   userController.getUser
 );
 
-router.patch('/updateMe',userController.updateMe);
+router.patch('/updateMe',userController.uploadUserPhoto,userController.updateMe);
 router.delete('/deleteMe',userController.deleteMe);
 
 
