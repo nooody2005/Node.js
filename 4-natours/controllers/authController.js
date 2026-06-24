@@ -4,7 +4,7 @@ const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const jwt = require('jsonwebtoken');
 const AppError = require('./../utils/appError');
-const sendEmail = require('./../utils/email');
+const Email = require('./../utils/email');
 const { token } = require('morgan');
 const { findById } = require('../models/tourModel');
 const { send } = require('process');
@@ -47,15 +47,11 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   // const newUser = await User.create(req.body);
-  const newUser = await User.create(
-    req.body
-  //   {
-  //   name: req.body.name,
-  //   email: req.body.email,
-  //   password: req.body.password,
-  //   passwordConfirm: req.body.passwordConfirm
-  // }
-);
+  const newUser = await User.create(req.body);
+
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  console.log(url);
+  await new Email(newUser,url).sendWelcome();
 
   createSendToken(newUser ,201 ,res);
   // const token = signToken(newUser._id);
@@ -224,11 +220,11 @@ exports.forgetPassword = catchAsync(async(req,res,next) => {
 
     try{
       
-      await sendEmail({
-        email: user.email,
-        subject: 'Your password reset token (valid for 10 min',
-        message
-      });
+      // await sendEmail({
+      //   email: user.email,
+      //   subject: 'Your password reset token (valid for 10 min',
+      //   message
+      // });
 
       res.status(200).json({
         status: 'success',

@@ -1,65 +1,89 @@
 const nodemailer = require('nodemailer');
 const pug = require('pug');
-const text = require('html-to-text');
+// const text = require('html-to-text');
+const { htmlToText } = require('html-to-text');
 
 
-module.exports = class Email{
-  constructor(user, url){
+module.exports = class Email {
+  constructor(user, url) {
     this.to = user.email;
-    this.firstName=user.name.split(' ')[0];
-    this.url= url;
-    this.from=`Nooody std (^_+_^)<${process.env.EMAIL_FROM}>`;
+    this.firstName = user.name.split(' ')[0];
+    this.url = url;
+    this.from = `Nooody std (^_+_^)<${process.env.EMAIL_FROM}>`;
   }
 
-  newTransport(){
-    if (process.env.NODE_ENV === 'production'){
-      //sendgrid
-      return 1;
-    }
-
+  newTransport() {
     return nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
-      //   secure: false,
-        auth: {
-          user: process.env.EMAIL_USERNAME,
-          pass: process.env.EMAIL_PASSWORD
-        }
-        // Activate in gmail "less seecure app" option
-      });
-    }
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+  }
 
+  // newTransport(){
+  //   if (process.env.NODE_ENV === 'production'){
+  //     //sendgrid
+  //     return 1;
+  //   }
+
+  // return nodemailer.createTransport({
+
+  //     host: process.env.EMAIL_HOST,
+  //     port: process.env.EMAIL_PORT,
+  //   //   secure: false,
+  //     auth: {
+  //       user: process.env.EMAIL_USERNAME,
+  //       pass: process.env.EMAIL_PASSWORD
+  //     }
+  //     // Activate in gmail "less seecure app" option
+  //   });
+
+  // nodemailer.createTransport({
+  //   host: process.env.EMAIL_HOST,
+  //   port: process.env.EMAIL_PORT,
+  //   secure: false,
+  //   auth: {
+  //     user: process.env.EMAIL_USERNAME,
+  //     pass: process.env.EMAIL_PASSWORD
+  //   }
+  // });
+
+  // }
 
   //send Acutal email
-  async send(template, subject){
+  async send(template, subject) {
     // 1) Render HTML based on a pug template
-    const html = pug.renderFile(
-      `${__dirname}/../views/email/${template}.pug`,{
-        firstName: this.firstName,
-        url:this.url,
-        subject
-      }
-    )
-  
-    // 2) Define email options 
-      const mailOptions = {
-        from: this.from,
-        to: this.to,
-        subject,
-        html,
-        text:text.htmlToText.fromString(html)
-        // html:
-      };
-  
-      // 3)  create a trasport and send email
-  
-       await this.newTransport().sendMail(mailOptions);
+    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
+      firstName: this.firstName,
+      url: this.url,
+      subject
+    });
+
+    // 2) Define email options
+    const mailOptions = {
+      from: this.from,
+      to: this.to,
+      subject,
+      html,
+      // text:text.htmlToText.fromString(html)
+      text: htmlToText(html)
+      // html:
+    };
+
+    // 3)  create a trasport and send email
+
+    await this.newTransport().sendMail(mailOptions);
   }
 
-  async sendWelcome(){
-    await this.send('welcome','welcome to the Natours family :)');
+  async sendWelcome() {
+    console.log('before sending');
+    await this.send('welcome', 'welcome to the Natours family :)');
+    console.log('after sending');
   }
-
 };
 
 // module.exports = sendEmail;
