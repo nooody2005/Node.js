@@ -9,20 +9,32 @@ module.exports = class Email {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = `Nooody std (^_+_^)<${process.env.EMAIL_FROM}>`;
+    this.from = `Nooody2005std<${process.env.EMAIL_FROM}>`;
   }
 
   newTransport() {
-    return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD
-      }
-    });
-  }
+    if (process.env.NODE_ENV === 'production'){
+      //sendgrid
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth:{
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_PASSWORD
+        }
+      });
+      
+    }
+
+  return nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+}
 
   // newTransport(){
   //   if (process.env.NODE_ENV === 'production'){
