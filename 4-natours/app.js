@@ -27,19 +27,28 @@ app.use(express.static(path.join(__dirname,'public')));
 
 //set Security HTTP headers
 // app.use(helmet())
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", 'https://js.stripe.com'],
-        connectSrc: ["'self'", 'https://api.stripe.com'],
-        frameSrc: ['https://js.stripe.com', 'https://hooks.stripe.com']
-      }
-    }
-  })
-);
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       directives: {
+//         defaultSrc: ["'self'"],
+//         scriptSrc: ["'self'", 'https://js.stripe.com'],
+//         connectSrc: ["'self'", 'https://api.stripe.com'],
+//         frameSrc: ['https://js.stripe.com', 'https://hooks.stripe.com']
+//       }
+//     }
+//   })
+// );
 
+if (process.env.NODE_ENV === 'development') {
+  app.use(
+    helmet({
+      contentSecurityPolicy: false
+    })
+  );
+} else {
+  app.use(helmet());
+}
 
 // DEvelopment Logging
 if (process.env.NODE_ENV === 'development') {
