@@ -1322,3 +1322,20 @@ body {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
 }
+
+.delete-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.user-view {
+  padding: 4rem 0;
+}
+
+.user-view__content {
+  max-width: 120rem;
+  margin: 0 auto;
+  padding: 0 6rem;
+}

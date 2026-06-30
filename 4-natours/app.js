@@ -10,6 +10,10 @@ const path = require('path');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
+
+const methodOverride = require('method-override');
+
+
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -18,6 +22,10 @@ const viewRouter = require('./routes/viewRouter');
 const { title } = require('process');
 
 const app = express();
+
+app.use(methodOverride('_method'));
+
+
 app.set('view engine','pug');
 app.set('views',path.join(__dirname,'views'));
 //=============================================================================================================

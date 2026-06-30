@@ -17,6 +17,46 @@ router.get('/my-tours',authController.protect, viewsController.getMyTours);
 
 router.post('/submit-user-data',authController.protect, viewsController.updateUserData);
 
+router.get('/signup', viewsController.getSignupForm);
+
+// =============================================================================== ADMIN ===================================================================
+router.get(
+  '/manage-tours',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewsController.getManageTours
+);
+
+router.get(
+  '/manage-users',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewsController.getManageUsers
+);
+
+router.get(
+  '/manage-reviews',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewsController.getManageReviews
+);
+
+router.get(
+  '/manage-bookings',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewsController.getManageBookings
+);
+
+// ======================= TOURS ======================
+router.get(
+  '/admin/tours/:id/edit',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewsController.getEditTour
+);
+
+
 module.exports = router;
 
 

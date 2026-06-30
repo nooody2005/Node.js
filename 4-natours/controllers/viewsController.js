@@ -3,6 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
+const Review = require('../models/reviewModel');
 
 exports.getOverview = catchAsync(async(req, res, next) => {
   // 1) get tour data from collection
@@ -86,5 +87,73 @@ exports.getMyTours = catchAsync(async(req, res ,next) => {
   res.status(200).render('overview', {
     title: 'My Tours',
     tours
+  });
+});
+
+
+exports.getSignupForm = (req, res) => {
+  res.status(200).render('signup', {
+    title: 'signup'
+  });
+};
+
+
+// ========================================================== ADMIN ===============================================================
+
+exports.getManageTours = catchAsync(async (req, res, next) => {
+  const tours = await Tour.find();
+
+  res.status(200).render('admin/manageTours', {
+    title: 'Manage Tours',
+    tours
+  });
+});
+
+exports.getManageUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find();
+
+  res.status(200).render('admin/manageUsers', {
+    title: 'Manage Users',
+    users
+  });
+});
+
+exports.getManageReviews = catchAsync(async (req, res, next) => {
+  // const reviews = await Review.find();
+  const reviews = await Review.find();
+    // .populate('user')
+    // .populate('tour');
+
+
+  res.status(200).render('admin/manageReviews', {
+    title: 'Manage reviews',
+    reviews
+  });
+});
+
+exports.getManageBookings = catchAsync(async (req, res, next) => {
+  // const bookings = await Booking.find();
+  const bookings = await Booking.find()
+    .populate('user')
+    .populate('tour');
+
+  res.status(200).render('admin/manageBookings', {
+    title: 'Manage Bookings',
+    bookings
+  });
+});
+
+
+// =============== TOURS =================
+exports.getEditTour = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findById(req.params.id);
+
+  if (!tour) {
+    return next(new AppError('No tour found', 404));
+  }
+
+  res.status(200).render('admin/editTour', {
+    title: 'Edit Tour',
+    tour
   });
 });
