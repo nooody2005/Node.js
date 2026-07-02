@@ -13,13 +13,19 @@ process.on('uncaughtException', err => {
 // const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
 
+// mongoose
+//   .connect(process.env.DATABASE_LOCAL, {
+//     useNewUrlParser: true
+//   })
+//   .then(() => console.log('DB connection successful'))
+//   .catch(err => console.log('DB connection error:', err));
+
 mongoose
-  .connect(process.env.DATABASE_LOCAL, {
+  .connect(process.env.DATABASE, {
     useNewUrlParser: true
   })
   .then(() => console.log('DB connection successful'))
   .catch(err => console.log('DB connection error:', err));
-
 
 
 const port = process.env.PORT || 3000;

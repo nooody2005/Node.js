@@ -190,11 +190,11 @@ tourSchema.pre(/^find/,function(next){
     next();
 });
 
-tourSchema.post(/^find/,function(docs,next){
-    console.log(`process take ${Date.now() - this.start} millesSconds :)`);
-    // console.log(docs);
-    next();
-});
+// tourSchema.post(/^find/,function(docs,next){
+//     console.log(`process take ${Date.now() - this.start} millesSconds :)`);
+//     // console.log(docs);
+//     next();
+// });
 // tourSchema.pre('find',function(next){
 //     this.find({secretTour : {$ne : true}});
 //     next();

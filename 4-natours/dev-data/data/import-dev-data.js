@@ -9,14 +9,24 @@ const Tour = require('./../../models/tourModel');
 const User = require('./../../models/userModel');
 const Review = require('./../../models/reviewModel');
 
-const DB = 'mongodb://127.0.0.1:27017/natours';
+// const DB = 'mongodb://127.0.0.1:27017/natours';
 
 
-console.log(DB);
-mongoose
-.connect(DB)
+
+const DB = process.env.DATABASE;
+
+mongoose.connect(DB, {
+    useNewUrlParser: true,
+  })
 .then(() => console.log('DB connection successful'))
 .catch(err => console.log('DB connection error:', err));
+
+
+// console.log(DB);
+// mongoose
+// .connect(DB)
+// .then(() => console.log('DB connection successful'))
+// .catch(err => console.log('DB connection error:', err));
 
 //Read file
 const tours =JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));

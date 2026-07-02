@@ -1,5 +1,9 @@
 node_modules/
-.env
+config.env
+*.env
+.cache/
 *.map
-public/js/bundle.js
 
+public/js/bundle.js
+public/js/bundle.js.map
+public/js/mapbox.js

@@ -9,9 +9,9 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
+const compression = require('compression');
 
-
-const methodOverride = require('method-override');
+// const methodOverride = require('method-override');
 
 
 const tourRouter = require('./routes/tourRoutes');
@@ -23,7 +23,7 @@ const { title } = require('process');
 
 const app = express();
 
-app.use(methodOverride('_method'));
+// app.use(methodOverride('_method'));
 
 
 app.set('view engine','pug');
@@ -88,6 +88,8 @@ app.use(hpp({
   whitelist: ['duration', 'ratingsQuantity', 'ratingsAverage','maxGroupSize','difficulty','price']
 }));  
 
+
+app.use(compression())
 
 
 // app.use((req, res, next) => {
